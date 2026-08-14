@@ -353,7 +353,7 @@ Citation information will be added after publication.
 
 ## Acknowledgements
 
-This implementation builds upon ideas and components from prior work on conversational speech synthesis, Grad-TTS, Face-TTS, HiFi-GAN, and multimodal affect modeling.
+This implementation builds upon ideas and components from prior work on conversational speech synthesis, Grad-TTS, FEIM-TTS, HiFi-GAN, and multimodal affect modeling.
 
 Please refer to the paper for complete citations and discussion of related work.
 
