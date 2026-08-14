@@ -1,0 +1,57 @@
+# Stage A: Response Style Predictor
+# Dialogue context + listener reaction (+ target text) -> emotion / prosody
+
+seed: 47
+
+data:
+  manifest_train: /workspace/REACT_TTS_rev/data/meld_full_v2/final/manifests/train.jsonl
+  manifest_val: /workspace/REACT_TTS_rev/data/meld_full_v2/final/manifests/dev.jsonl
+  synthetic: false          # set false once manifests above exist
+  num_context_turns: 3     # t-3, t-2, t-1 (paper default: 2-3 turns)
+  max_text_len: 40         # tokens per turn, padded/truncated
+  reaction_num_frames: 16  # uniformly sampled frames from the ~2s listener window
+  window_pre_sec: 1.0
+  window_post_sec: 0.0
+  num_emotion_classes: 7   # MELD: anger,disgust,fear,joy,neutral,sadness,surprise
+  tokenizer: lite          # "lite" (built-in, no download) or "hf:<model_name>"
+
+model:
+  text:
+    vocab_size: 8000        # only used by the "lite" tokenizer
+    hidden_dim: 256
+    num_layers: 4
+    num_heads: 4
+    ffn_dim: 1024
+    max_turns: 8
+    dropout: 0.1
+  reaction:
+    face_feat_dim: 52       # MediaPipe FaceLandmarker blendshape score vector (see preprocessing/pretrained_face_embedder.py)
+    hidden_dim: 256
+    num_layers: 2
+    num_heads: 4
+    ffn_dim: 1024
+    dropout: 0.1
+    use_listener_face: true   # ablation: text-only baseline when false
+    temporal_face: true       # ablation: static single-frame baseline when false
+    use_reaction_delta: true  # ablation: RQ2, disable to test static-embedding-only
+    random_listener: false    # control experiment: shuffle listener reaction across batch
+  fusion:
+    hidden_dim: 256
+    num_heads: 4
+    dropout: 0.1
+  style:
+    emotion_hidden: 128
+    vad_dim: 3
+    prosody_dim: 4   # [f0_mean, f0_std, energy, speaking_rate], speaker-normalized
+
+train:
+  batch_size: 16
+  lr: 2.0e-4
+  weight_decay: 1.0e-2
+  epochs: 50
+  emotion_loss_weight: 1.0
+  prosody_loss_weight: 1.0
+  vad_loss_weight: 0.5
+  grad_clip: 1.0
+  log_every: 50
+  ckpt_dir: checkpoints/stage_a_text_only_seed47

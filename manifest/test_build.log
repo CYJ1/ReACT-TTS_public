@@ -1,0 +1,48 @@
+[1/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[2/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[3/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[4/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[5/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[6/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[7/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[8/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[9/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[10/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[11/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[12/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[13/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[14/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[15/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[16/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[17/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[18/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[19/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[20/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[21/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[22/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[23/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[24/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[25/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[26/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[27/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[28/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[29/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[30/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[31/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[32/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[33/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[34/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[35/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[36/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[37/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[38/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[39/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+[40/40 dialogues] 0 samples kept so far -- 0s elapsed, ~0s remaining (0.0s/dialogue)
+
+--- why windows were kept/skipped (see MIN_VISIBILITY_RATIO / MIN_TARGET_DURATION_SEC at the top of this file to tune) ---
+     321  candidate_windows
+     197  skipped: prev video file not found
+     108  skipped: not exactly 2 distinct speakers
+      16  skipped: target utterance too short
+
+Wrote 0 dyadic samples to /content/drive/MyDrive//manifests/test_full.jsonl

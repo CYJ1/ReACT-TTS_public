@@ -1,0 +1,52 @@
+# Stage B: Expressive TTS backbone trained with GROUND-TRUTH style embeddings.
+# (Reproduces the FEIM-TTS / Face-TTS setting: face/emotion -> expressive speech,
+#  before the conversational planner from Stage A is connected.)
+
+seed: 42
+
+data:
+  manifest_train: data/tts/train.jsonl
+  manifest_val: data/tts/val.jsonl
+  synthetic: true
+  sample_rate: 22050
+  n_mels: 80
+  hop_length: 256
+  win_length: 1024
+  max_mel_len: 800
+  max_text_len: 200
+
+model:
+  phoneme_vocab_size: 178   # e.g. CMUdict/ARPAbet + punctuation, adjust to your g2p
+  n_mels: 80
+  speaker_emb_dim: 256      # from a pretrained speaker/face encoder (Face-TTS lineage)
+  style_emb_dim: 256        # must match react_tts.modules fusion.hidden_dim in stage_a.yaml
+  encoder:
+    hidden_dim: 256
+    num_layers: 4
+    num_heads: 4
+    ffn_dim: 1024
+    dropout: 0.1
+  duration_predictor:
+    hidden_dim: 256
+    kernel_size: 3
+    num_layers: 2
+    dropout: 0.5
+  decoder:
+    hidden_dim: 128            # U-Net base channels
+    num_res_blocks: 2
+    channel_mults: [1, 2, 2]
+    diffusion_steps: 50        # inference steps (score-based, few-step ODE sampler)
+    beta_min: 0.05
+    beta_max: 20.0
+
+train:
+  batch_size: 16
+  lr: 1.0e-4
+  weight_decay: 0.0
+  epochs: 200
+  duration_loss_weight: 0.5
+  grad_clip: 1.0
+  log_every: 50
+  ckpt_dir: checkpoints/stage_b
+  # warm start from a pretrained Face-TTS / Grad-TTS checkpoint if available
+  pretrained_ckpt: null

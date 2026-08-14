@@ -1,0 +1,283 @@
+"""Build a high-confidence *dyadic* subset of MELD for ReACT-TTS (README
+"Data strategy" / design doc §16-17): only clearly two-person scenes, with
+a persistently visible listener face, are kept -- multi-party scenes are
+dropped rather than forced through an uncertain speaker/listener assignment.
+
+Pipeline per dialogue:
+    1. group utterances by Dialogue_ID (MELD CSV columns), sorted by Utterance_ID.
+    2. slide a window: target turn `t`, context turns `[t-K, t)`.
+    3. keep only windows where the context+target span exactly 2 distinct speakers.
+    4. decode the relevant span of the previous turn's video ONCE
+       (`face_utils.read_frames_sequential` -- a single seek + sequential
+       reads, not one seek per frame) and reuse those frames for face
+       detection+tracking, the speaker/listener heuristic, AND the reaction
+       embedding below, instead of opening/seeking the same clip three times.
+       Keep only windows with exactly 2 persistent face tracks, each visible
+       over >= `MIN_VISIBILITY_RATIO` of the window.
+    5. assign speaker/listener tracks via a mouth-motion-energy proxy (see
+       `estimate_mouth_motion_energy_from_frames`): the track with higher
+       motion energy during the *previous* utterance's own timespan is the
+       previous speaker; the other track is the listener. This is a
+       heuristic, not a real active-speaker detector -- documented as a
+       paper limitation.
+    6. extract listener-reaction face features (`extract_listener_reaction.py`)
+       and prosody targets (`extract_prosody_features.py`) for the manifest.
+
+Prints per-dialogue progress with an elapsed/remaining-time estimate, since
+step 4 (video decode + face detection) dominates runtime and is hard to
+predict in advance (depends on clip length/count and host I/O speed).
+
+Output: one JSON object per line, matching `DialogueStyleDataset` /
+`TTSDialogueDataset`'s manifest schema.
+
+Usage:
+    python preprocessing/build_meld_dyadic_subset.py \
+        --meld_csv data/meld/train_sent_emo.csv \
+        --video_dir data/meld/train_splits \
+        --out_manifest data/meld_dyadic/train.jsonl \
+        --num_context_turns 3
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import os
+import time
+from collections import defaultdict
+from typing import Dict, List
+
+from preprocessing.extract_listener_reaction import extract_listener_reaction_features_from_frames
+from preprocessing.extract_prosody_features import RawProsody, SpeakerNormalizer, extract_raw_prosody
+from preprocessing.face_utils import build_face_tracks_from_frames, read_frames_sequential
+
+MIN_TARGET_DURATION_SEC = 1.0
+MIN_VISIBILITY_RATIO = 0.3
+FACE_DETECT_STRIDE = 2  # detect every Nth frame to keep preprocessing tractable
+
+
+def parse_meld_timestamp(ts: str) -> float:
+    """MELD's raw CSV timestamps look like "0:00:16,679" (H:MM:SS,mmm)."""
+    hms, millis = ts.split(",")
+    h, m, s = (int(x) for x in hms.split(":"))
+    return h * 3600 + m * 60 + s + int(millis) / 1000.0
+
+
+def load_meld_csv(csv_path: str) -> Dict[str, List[dict]]:
+    dialogues: Dict[str, List[dict]] = defaultdict(list)
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if "StartTime" in row:
+                row["StartTime_sec"] = parse_meld_timestamp(row["StartTime"])
+            if "EndTime" in row:
+                row["EndTime_sec"] = parse_meld_timestamp(row["EndTime"])
+            dialogues[row["Dialogue_ID"]].append(row)
+    for dialogue_id in dialogues:
+        dialogues[dialogue_id].sort(key=lambda r: int(r["Utterance_ID"]))
+    return dialogues
+
+
+def clip_path(video_dir: str, dialogue_id: str, utterance_id: str) -> str:
+    return os.path.join(video_dir, f"dia{dialogue_id}_utt{utterance_id}.mp4")
+
+
+def estimate_mouth_motion_energy_from_frames(frames: dict, bbox_per_frame: dict, start_frame: int, end_frame: int) -> float:
+    """Cheap visual-voice-activity proxy: mean frame-to-frame pixel
+    difference in the lower half of the tracked face bbox (mouth region)
+    over [start_frame, end_frame). Higher -> more likely to be speaking.
+    Operates on already-decoded frames (see `read_frames_sequential`).
+    """
+    import cv2
+    import numpy as np
+
+    prev_mouth = None
+    energies = []
+    for frame_idx in range(start_frame, end_frame):
+        bbox = bbox_per_frame.get(frame_idx)
+        frame = frames.get(frame_idx)
+        if bbox is None or frame is None:
+            prev_mouth = None
+            continue
+        x1, y1, x2, y2 = [int(v) for v in bbox]
+        mouth = frame[y1 + (y2 - y1) // 2 : y2, x1:x2]
+        if mouth.size == 0:
+            continue
+        mouth = cv2.resize(cv2.cvtColor(mouth, cv2.COLOR_BGR2GRAY), (32, 16)).astype("float32")
+        if prev_mouth is not None:
+            energies.append(float(np.mean(np.abs(mouth - prev_mouth))))
+        prev_mouth = mouth
+    return sum(energies) / len(energies) if energies else 0.0
+
+
+def process_dialogue(dialogue_id: str, utterances: List[dict], video_dir: str, num_context_turns: int,
+                      window_pre_sec: float, window_post_sec: float, reaction_num_frames: int, face_feat_dim: int) -> List[dict]:
+    samples = []
+    for t in range(1, len(utterances)):
+        context = utterances[max(0, t - num_context_turns) : t]
+        target = utterances[t]
+
+        speakers = {u["Speaker"] for u in context} | {target["Speaker"]}
+        if len(speakers) != 2:
+            continue  # multi-party or self-monologue window, skip (dyadic subset only)
+
+        target_duration = float(target["EndTime_sec"]) - float(target["StartTime_sec"]) if "EndTime_sec" in target else None
+        if target_duration is not None and target_duration < MIN_TARGET_DURATION_SEC:
+            continue
+
+        prev = context[-1]
+        prev_video = clip_path(video_dir, dialogue_id, prev["Utterance_ID"])
+        if not os.path.exists(prev_video):
+            continue
+
+        # MELD's per-utterance clip files (dia{D}_utt{U}.mp4) are already trimmed to
+        # just that utterance, starting at 0:00 in the file -- but the CSV's
+        # StartTime/EndTime are absolute timestamps within the *original episode*.
+        # Using those directly as offsets into the clip file was the bug: it seeks
+        # far past the (few-second) clip's actual length, decodes zero frames, and
+        # every sample gets silently skipped. Use the utterance's own duration as
+        # the clip-relative "end" position instead.
+        prev_duration = max(0.0, float(prev.get("EndTime_sec", 0.0)) - float(prev.get("StartTime_sec", 0.0)))
+        clip_t_end = prev_duration
+        # Decode only the span actually needed (prev utterance's own span, for the
+        # speaker/listener motion heuristic, unioned with the reaction window) -- NOT
+        # the whole clip from frame 0 -- and only ONCE, reused across all three
+        # downstream steps (tracking, motion estimate, reaction embedding) instead of
+        # three separate video opens+seeks.
+        window_start_sec = max(0.0, clip_t_end - window_pre_sec)
+        window_end_sec = clip_t_end + window_post_sec  # may run past the clip's actual end; that's fine,
+        # read_frames_sequential just stops decoding once cap.read() fails
+
+        try:
+            fps, frames = read_frames_sequential(prev_video, window_start_sec, window_end_sec)
+        except Exception:
+            continue  # missing optional deps (cv2/mediapipe) or unreadable video: skip sample
+        if not frames:
+            continue
+
+        tracks = build_face_tracks_from_frames(frames, fps, stride=FACE_DETECT_STRIDE)
+        expected_frames = max(1, len(frames) // FACE_DETECT_STRIDE)
+        visible_tracks = [tr for tr in tracks if len(tr.boxes) / expected_frames >= MIN_VISIBILITY_RATIO]
+        if len(visible_tracks) != 2:
+            continue  # not a clean two-face scene at high confidence
+
+        prev_start_frame = 0  # the utterance's own span within its own clip file starts at 0:00
+        prev_end_frame = int(prev_duration * fps)
+        bbox_maps = [{b.frame_idx: (b.x1, b.y1, b.x2, b.y2) for b in tr.boxes} for tr in visible_tracks]
+        motion = [
+            estimate_mouth_motion_energy_from_frames(frames, bmap, prev_start_frame, prev_end_frame)
+            for bmap in bbox_maps
+        ]
+        speaker_idx = 0 if motion[0] >= motion[1] else 1
+        listener_idx = 1 - speaker_idx
+        listener_bbox_map = bbox_maps[listener_idx]
+
+        reaction_feats = extract_listener_reaction_features_from_frames(
+            frames,
+            fps,
+            listener_bbox_map,
+            t_end=clip_t_end,
+            window_pre_sec=window_pre_sec,
+            window_post_sec=window_post_sec,
+            num_frames=reaction_num_frames,
+            face_feat_dim=face_feat_dim,
+        )
+        if reaction_feats.shape[0] / reaction_num_frames < MIN_VISIBILITY_RATIO:
+            continue
+
+        samples.append(
+            {
+                "dialogue_id": dialogue_id,
+                "context_turns": [{"text": u["Utterance"], "speaker_id": u["Speaker"]} for u in context],
+                "context_emotions": [u["Emotion"].lower() for u in context],
+                "target_text": target["Utterance"],
+                "target_speaker_id": target["Speaker"],
+                "target_emotion": target["Emotion"].lower(),
+                "_reaction_features": reaction_feats,  # written to .npy by the caller, then replaced by its path
+                # MELD clips are self-contained .mp4 with an audio track; librosa reads
+                # audio out of them directly (via ffmpeg/audioread) so no separate .wav
+                # extraction step is needed. (Previously pointed at a .wav path that was
+                # never created, silently breaking prosody targets -- fixed here.)
+                "_target_audio_path": clip_path(video_dir, dialogue_id, target["Utterance_ID"]),
+                "_target_speaker_raw": target["Speaker"],
+            }
+        )
+    return samples
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--meld_csv", required=True)
+    parser.add_argument("--video_dir", required=True)
+    parser.add_argument("--out_manifest", required=True)
+    parser.add_argument("--out_features_dir", default=None, help="defaults to <out_manifest dir>/reaction_features")
+    parser.add_argument("--num_context_turns", type=int, default=3)
+    parser.add_argument("--window_pre_sec", type=float, default=1.0)
+    parser.add_argument("--window_post_sec", type=float, default=1.0)
+    parser.add_argument("--reaction_num_frames", type=int, default=16)
+    parser.add_argument("--face_feat_dim", type=int, default=52)  # MediaPipe blendshape score vector
+    parser.add_argument("--limit_dialogues", type=int, default=None)
+    args = parser.parse_args()
+
+    out_features_dir = args.out_features_dir or os.path.join(os.path.dirname(args.out_manifest), "reaction_features")
+    os.makedirs(out_features_dir, exist_ok=True)
+    os.makedirs(os.path.dirname(args.out_manifest), exist_ok=True)
+
+    dialogues = load_meld_csv(args.meld_csv)
+    dialogue_ids = list(dialogues.keys())
+    if args.limit_dialogues:
+        dialogue_ids = dialogue_ids[: args.limit_dialogues]
+
+    all_samples = []
+    start_time = time.time()
+    for i, dialogue_id in enumerate(dialogue_ids, start=1):
+        all_samples.extend(
+            process_dialogue(
+                dialogue_id, dialogues[dialogue_id], args.video_dir, args.num_context_turns,
+                args.window_pre_sec, args.window_post_sec, args.reaction_num_frames, args.face_feat_dim,
+            )
+        )
+        elapsed = time.time() - start_time
+        rate = elapsed / i
+        remaining = rate * (len(dialogue_ids) - i)
+        print(
+            f"[{i}/{len(dialogue_ids)} dialogues] {len(all_samples)} samples kept so far -- "
+            f"{elapsed:.0f}s elapsed, ~{remaining:.0f}s remaining ({rate:.1f}s/dialogue)",
+            flush=True,
+        )
+
+    # second pass: speaker-normalized prosody (needs corpus-level stats)
+    raw_prosody_cache: Dict[int, RawProsody] = {}
+    per_speaker: Dict[str, List[RawProsody]] = defaultdict(list)
+    for i, s in enumerate(all_samples):
+        try:
+            num_words = len(s["target_text"].split())
+            raw = extract_raw_prosody(s["_target_audio_path"], num_words)
+        except Exception:
+            continue
+        raw_prosody_cache[i] = raw
+        per_speaker[s["_target_speaker_raw"]].append(raw)
+
+    normalizer = SpeakerNormalizer()
+    normalizer.fit(per_speaker)
+
+    with open(args.out_manifest, "w") as f:
+        for i, s in enumerate(all_samples):
+            import numpy as np
+
+            feat_path = os.path.join(out_features_dir, f"{s['dialogue_id']}_{i}.npy")
+            np.save(feat_path, s.pop("_reaction_features"))
+            s["listener_reaction_path"] = feat_path
+
+            raw = raw_prosody_cache.get(i)
+            s["target_prosody"] = (
+                normalizer.normalize(s["_target_speaker_raw"], raw) if raw is not None else [0.0, 0.0, 0.0, 0.0]
+            )
+            s.pop("_target_audio_path", None)
+            s.pop("_target_speaker_raw", None)
+            f.write(json.dumps(s) + "\n")
+
+    print(f"Wrote {len(all_samples)} dyadic samples to {args.out_manifest}")
+
+
+if __name__ == "__main__":
+    main()

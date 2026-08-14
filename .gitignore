@@ -1,0 +1,29 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+/checkpoints/
+/out/
+/data/
+/models/
+*.egg-info/
+.DS_Store
+
+# Experiment artifacts
+checkpoints/
+outputs/
+logs/
+results/
+
+# Data
+data/
+*.pt
+*.pth
+*.ckpt
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE / system
+.vscode/
+.DS_Store

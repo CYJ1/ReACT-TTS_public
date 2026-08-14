@@ -1,0 +1,24 @@
+torch>=2.1
+torchaudio>=2.1
+numpy         # do NOT pin <2 here: environments like Colab preinstall numpy>=2 for other
+              # packages (jax, opencv-python, ...) and forcing a downgrade breaks those.
+              # numpy<2 is only needed if your *specific* torch build predates numpy2 ABI
+              # support (symptom: `import torch.nn` raises "_ARRAY_API not found") -- fix
+              # that locally (upgrade torch, or downgrade numpy in that venv only), don't
+              # pin it globally here.
+PyYAML>=6.0
+einops>=0.7
+
+# optional, used by preprocessing/ scripts (not required for react_tts/ core or tests)
+librosa>=0.10
+soundfile>=0.12
+pyworld>=0.3.4
+opencv-python-headless>=4.9
+mediapipe>=0.10          # face detection + expression (blendshape) embedding, see preprocessing/pretrained_face_embedder.py
+resemblyzer>=0.1.4       # pretrained speaker embedding, weights ship in the wheel (no GitHub/HF download needed)
+setuptools<81            # resemblyzer's webrtcvad dependency imports pkg_resources, removed from setuptools>=81
+transformers>=4.40
+g2p_en>=2.1
+
+# dev
+pytest>=7.4

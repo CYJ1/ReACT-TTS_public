@@ -1,0 +1,546 @@
+2026-07-21 12:46:45.288235: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1784638010.067719   64491 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1784638010.473583   64494 face_landmarker_graph.cc:174] Sets FaceBlendshapesGraph acceleration to xnnpack by default.
+W0000 00:00:1784638010.507049   64497 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+[1/150 dialogues] 1 samples kept so far -- 12s elapsed, ~1724s remaining (11.6s/dialogue)
+[2/150 dialogues] 1 samples kept so far -- 15s elapsed, ~1100s remaining (7.4s/dialogue)
+[3/150 dialogues] 1 samples kept so far -- 18s elapsed, ~879s remaining (6.0s/dialogue)
+[4/150 dialogues] 2 samples kept so far -- 20s elapsed, ~715s remaining (4.9s/dialogue)
+[5/150 dialogues] 3 samples kept so far -- 23s elapsed, ~659s remaining (4.5s/dialogue)
+[6/150 dialogues] 3 samples kept so far -- 23s elapsed, ~546s remaining (3.8s/dialogue)
+[7/150 dialogues] 3 samples kept so far -- 29s elapsed, ~587s remaining (4.1s/dialogue)
+[8/150 dialogues] 3 samples kept so far -- 29s elapsed, ~517s remaining (3.6s/dialogue)
+[9/150 dialogues] 5 samples kept so far -- 30s elapsed, ~477s remaining (3.4s/dialogue)
+[10/150 dialogues] 6 samples kept so far -- 34s elapsed, ~472s remaining (3.4s/dialogue)
+[11/150 dialogues] 6 samples kept so far -- 34s elapsed, ~433s remaining (3.1s/dialogue)
+[12/150 dialogues] 6 samples kept so far -- 35s elapsed, ~402s remaining (2.9s/dialogue)
+[13/150 dialogues] 6 samples kept so far -- 40s elapsed, ~426s remaining (3.1s/dialogue)
+[14/150 dialogues] 7 samples kept so far -- 43s elapsed, ~421s remaining (3.1s/dialogue)
+[15/150 dialogues] 7 samples kept so far -- 45s elapsed, ~408s remaining (3.0s/dialogue)
+[16/150 dialogues] 7 samples kept so far -- 51s elapsed, ~426s remaining (3.2s/dialogue)
+[17/150 dialogues] 7 samples kept so far -- 51s elapsed, ~400s remaining (3.0s/dialogue)
+[18/150 dialogues] 7 samples kept so far -- 52s elapsed, ~381s remaining (2.9s/dialogue)
+[19/150 dialogues] 7 samples kept so far -- 56s elapsed, ~388s remaining (3.0s/dialogue)
+[20/150 dialogues] 7 samples kept so far -- 56s elapsed, ~366s remaining (2.8s/dialogue)
+[21/150 dialogues] 8 samples kept so far -- 60s elapsed, ~367s remaining (2.8s/dialogue)
+[22/150 dialogues] 8 samples kept so far -- 62s elapsed, ~363s remaining (2.8s/dialogue)
+[23/150 dialogues] 8 samples kept so far -- 64s elapsed, ~351s remaining (2.8s/dialogue)
+[24/150 dialogues] 8 samples kept so far -- 64s elapsed, ~336s remaining (2.7s/dialogue)
+[25/150 dialogues] 8 samples kept so far -- 66s elapsed, ~330s remaining (2.6s/dialogue)
+[26/150 dialogues] 8 samples kept so far -- 72s elapsed, ~342s remaining (2.8s/dialogue)
+[27/150 dialogues] 10 samples kept so far -- 73s elapsed, ~334s remaining (2.7s/dialogue)
+[28/150 dialogues] 10 samples kept so far -- 74s elapsed, ~322s remaining (2.6s/dialogue)
+[29/150 dialogues] 10 samples kept so far -- 76s elapsed, ~315s remaining (2.6s/dialogue)
+[30/150 dialogues] 10 samples kept so far -- 80s elapsed, ~320s remaining (2.7s/dialogue)
+[31/150 dialogues] 14 samples kept so far -- 84s elapsed, ~324s remaining (2.7s/dialogue)
+[32/150 dialogues] 15 samples kept so far -- 86s elapsed, ~317s remaining (2.7s/dialogue)
+[33/150 dialogues] 15 samples kept so far -- 88s elapsed, ~311s remaining (2.7s/dialogue)
+[34/150 dialogues] 15 samples kept so far -- 88s elapsed, ~301s remaining (2.6s/dialogue)
+[35/150 dialogues] 18 samples kept so far -- 92s elapsed, ~302s remaining (2.6s/dialogue)
+[36/150 dialogues] 18 samples kept so far -- 92s elapsed, ~292s remaining (2.6s/dialogue)
+[37/150 dialogues] 18 samples kept so far -- 93s elapsed, ~283s remaining (2.5s/dialogue)
+[38/150 dialogues] 18 samples kept so far -- 94s elapsed, ~277s remaining (2.5s/dialogue)
+[39/150 dialogues] 18 samples kept so far -- 95s elapsed, ~271s remaining (2.4s/dialogue)
+[40/150 dialogues] 18 samples kept so far -- 99s elapsed, ~273s remaining (2.5s/dialogue)
+[41/150 dialogues] 18 samples kept so far -- 101s elapsed, ~268s remaining (2.5s/dialogue)
+[42/150 dialogues] 18 samples kept so far -- 105s elapsed, ~271s remaining (2.5s/dialogue)
+[43/150 dialogues] 18 samples kept so far -- 106s elapsed, ~264s remaining (2.5s/dialogue)
+[44/150 dialogues] 18 samples kept so far -- 108s elapsed, ~261s remaining (2.5s/dialogue)
+[45/150 dialogues] 18 samples kept so far -- 109s elapsed, ~255s remaining (2.4s/dialogue)
+[46/150 dialogues] 19 samples kept so far -- 111s elapsed, ~251s remaining (2.4s/dialogue)
+[47/150 dialogues] 21 samples kept so far -- 114s elapsed, ~250s remaining (2.4s/dialogue)
+[48/150 dialogues] 26 samples kept so far -- 123s elapsed, ~261s remaining (2.6s/dialogue)
+[49/150 dialogues] 26 samples kept so far -- 123s elapsed, ~253s remaining (2.5s/dialogue)
+[50/150 dialogues] 26 samples kept so far -- 126s elapsed, ~251s remaining (2.5s/dialogue)
+[51/150 dialogues] 26 samples kept so far -- 126s elapsed, ~246s remaining (2.5s/dialogue)
+[52/150 dialogues] 26 samples kept so far -- 132s elapsed, ~249s remaining (2.5s/dialogue)
+[53/150 dialogues] 26 samples kept so far -- 135s elapsed, ~247s remaining (2.6s/dialogue)
+[54/150 dialogues] 26 samples kept so far -- 141s elapsed, ~250s remaining (2.6s/dialogue)
+[55/150 dialogues] 27 samples kept so far -- 150s elapsed, ~260s remaining (2.7s/dialogue)
+[56/150 dialogues] 28 samples kept so far -- 153s elapsed, ~257s remaining (2.7s/dialogue)
+[57/150 dialogues] 28 samples kept so far -- 157s elapsed, ~257s remaining (2.8s/dialogue)
+[58/150 dialogues] 28 samples kept so far -- 157s elapsed, ~250s remaining (2.7s/dialogue)
+[59/150 dialogues] 28 samples kept so far -- 159s elapsed, ~245s remaining (2.7s/dialogue)
+[60/150 dialogues] 28 samples kept so far -- 159s elapsed, ~238s remaining (2.6s/dialogue)
+[61/150 dialogues] 28 samples kept so far -- 161s elapsed, ~234s remaining (2.6s/dialogue)
+[62/150 dialogues] 28 samples kept so far -- 163s elapsed, ~232s remaining (2.6s/dialogue)
+[63/150 dialogues] 29 samples kept so far -- 166s elapsed, ~230s remaining (2.6s/dialogue)
+[64/150 dialogues] 30 samples kept so far -- 171s elapsed, ~230s remaining (2.7s/dialogue)
+[65/150 dialogues] 30 samples kept so far -- 172s elapsed, ~225s remaining (2.6s/dialogue)
+[66/150 dialogues] 30 samples kept so far -- 177s elapsed, ~225s remaining (2.7s/dialogue)
+[67/150 dialogues] 30 samples kept so far -- 183s elapsed, ~227s remaining (2.7s/dialogue)
+[68/150 dialogues] 31 samples kept so far -- 185s elapsed, ~223s remaining (2.7s/dialogue)
+[69/150 dialogues] 31 samples kept so far -- 186s elapsed, ~219s remaining (2.7s/dialogue)
+[70/150 dialogues] 31 samples kept so far -- 188s elapsed, ~215s remaining (2.7s/dialogue)
+[71/150 dialogues] 31 samples kept so far -- 188s elapsed, ~209s remaining (2.6s/dialogue)
+[72/150 dialogues] 31 samples kept so far -- 190s elapsed, ~206s remaining (2.6s/dialogue)
+[73/150 dialogues] 31 samples kept so far -- 195s elapsed, ~206s remaining (2.7s/dialogue)
+[74/150 dialogues] 31 samples kept so far -- 198s elapsed, ~203s remaining (2.7s/dialogue)
+[75/150 dialogues] 31 samples kept so far -- 198s elapsed, ~198s remaining (2.6s/dialogue)
+[76/150 dialogues] 31 samples kept so far -- 200s elapsed, ~195s remaining (2.6s/dialogue)
+[77/150 dialogues] 32 samples kept so far -- 201s elapsed, ~191s remaining (2.6s/dialogue)
+[78/150 dialogues] 32 samples kept so far -- 202s elapsed, ~186s remaining (2.6s/dialogue)
+[79/150 dialogues] 33 samples kept so far -- 204s elapsed, ~183s remaining (2.6s/dialogue)
+[80/150 dialogues] 34 samples kept so far -- 207s elapsed, ~181s remaining (2.6s/dialogue)
+[81/150 dialogues] 34 samples kept so far -- 210s elapsed, ~179s remaining (2.6s/dialogue)
+[82/150 dialogues] 34 samples kept so far -- 215s elapsed, ~178s remaining (2.6s/dialogue)
+[83/150 dialogues] 34 samples kept so far -- 216s elapsed, ~175s remaining (2.6s/dialogue)
+[84/150 dialogues] 35 samples kept so far -- 217s elapsed, ~171s remaining (2.6s/dialogue)
+[85/150 dialogues] 35 samples kept so far -- 219s elapsed, ~167s remaining (2.6s/dialogue)
+[86/150 dialogues] 36 samples kept so far -- 222s elapsed, ~165s remaining (2.6s/dialogue)
+[87/150 dialogues] 36 samples kept so far -- 223s elapsed, ~161s remaining (2.6s/dialogue)
+[88/150 dialogues] 36 samples kept so far -- 224s elapsed, ~158s remaining (2.6s/dialogue)
+[89/150 dialogues] 36 samples kept so far -- 227s elapsed, ~156s remaining (2.6s/dialogue)
+[90/150 dialogues] 36 samples kept so far -- 227s elapsed, ~151s remaining (2.5s/dialogue)
+[91/150 dialogues] 36 samples kept so far -- 227s elapsed, ~147s remaining (2.5s/dialogue)
+[92/150 dialogues] 36 samples kept so far -- 227s elapsed, ~143s remaining (2.5s/dialogue)
+[93/150 dialogues] 36 samples kept so far -- 228s elapsed, ~140s remaining (2.5s/dialogue)
+[94/150 dialogues] 36 samples kept so far -- 233s elapsed, ~139s remaining (2.5s/dialogue)
+[95/150 dialogues] 40 samples kept so far -- 240s elapsed, ~139s remaining (2.5s/dialogue)
+[96/150 dialogues] 40 samples kept so far -- 240s elapsed, ~135s remaining (2.5s/dialogue)
+[97/150 dialogues] 40 samples kept so far -- 240s elapsed, ~131s remaining (2.5s/dialogue)
+[98/150 dialogues] 40 samples kept so far -- 240s elapsed, ~128s remaining (2.5s/dialogue)
+[99/150 dialogues] 41 samples kept so far -- 244s elapsed, ~126s remaining (2.5s/dialogue)
+[100/150 dialogues] 41 samples kept so far -- 248s elapsed, ~124s remaining (2.5s/dialogue)
+[101/150 dialogues] 42 samples kept so far -- 249s elapsed, ~121s remaining (2.5s/dialogue)
+[102/150 dialogues] 42 samples kept so far -- 250s elapsed, ~118s remaining (2.5s/dialogue)
+[103/150 dialogues] 42 samples kept so far -- 253s elapsed, ~116s remaining (2.5s/dialogue)
+[104/150 dialogues] 42 samples kept so far -- 254s elapsed, ~112s remaining (2.4s/dialogue)
+[105/150 dialogues] 42 samples kept so far -- 255s elapsed, ~109s remaining (2.4s/dialogue)
+[106/150 dialogues] 42 samples kept so far -- 256s elapsed, ~106s remaining (2.4s/dialogue)
+[107/150 dialogues] 42 samples kept so far -- 257s elapsed, ~103s remaining (2.4s/dialogue)
+[108/150 dialogues] 42 samples kept so far -- 257s elapsed, ~100s remaining (2.4s/dialogue)
+[109/150 dialogues] 43 samples kept so far -- 260s elapsed, ~98s remaining (2.4s/dialogue)
+[110/150 dialogues] 43 samples kept so far -- 261s elapsed, ~95s remaining (2.4s/dialogue)
+[111/150 dialogues] 43 samples kept so far -- 271s elapsed, ~95s remaining (2.4s/dialogue)
+[112/150 dialogues] 43 samples kept so far -- 272s elapsed, ~92s remaining (2.4s/dialogue)
+[113/150 dialogues] 45 samples kept so far -- 275s elapsed, ~90s remaining (2.4s/dialogue)
+[114/150 dialogues] 45 samples kept so far -- 276s elapsed, ~87s remaining (2.4s/dialogue)
+[115/150 dialogues] 46 samples kept so far -- 278s elapsed, ~85s remaining (2.4s/dialogue)
+[116/150 dialogues] 46 samples kept so far -- 282s elapsed, ~83s remaining (2.4s/dialogue)
+[117/150 dialogues] 46 samples kept so far -- 284s elapsed, ~80s remaining (2.4s/dialogue)
+[118/150 dialogues] 46 samples kept so far -- 286s elapsed, ~77s remaining (2.4s/dialogue)
+[119/150 dialogues] 48 samples kept so far -- 289s elapsed, ~75s remaining (2.4s/dialogue)
+[120/150 dialogues] 49 samples kept so far -- 291s elapsed, ~73s remaining (2.4s/dialogue)
+[121/150 dialogues] 50 samples kept so far -- 292s elapsed, ~70s remaining (2.4s/dialogue)
+[122/150 dialogues] 51 samples kept so far -- 299s elapsed, ~69s remaining (2.5s/dialogue)
+[123/150 dialogues] 52 samples kept so far -- 301s elapsed, ~66s remaining (2.5s/dialogue)
+[124/150 dialogues] 54 samples kept so far -- 306s elapsed, ~64s remaining (2.5s/dialogue)
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x1acc8980] moov atom not found
+[125/150 dialogues] 54 samples kept so far -- 309s elapsed, ~62s remaining (2.5s/dialogue)
+[126/150 dialogues] 54 samples kept so far -- 313s elapsed, ~60s remaining (2.5s/dialogue)
+[127/150 dialogues] 54 samples kept so far -- 313s elapsed, ~57s remaining (2.5s/dialogue)
+[128/150 dialogues] 55 samples kept so far -- 314s elapsed, ~54s remaining (2.5s/dialogue)
+[129/150 dialogues] 55 samples kept so far -- 317s elapsed, ~52s remaining (2.5s/dialogue)
+[130/150 dialogues] 55 samples kept so far -- 324s elapsed, ~50s remaining (2.5s/dialogue)
+[131/150 dialogues] 55 samples kept so far -- 324s elapsed, ~47s remaining (2.5s/dialogue)
+[132/150 dialogues] 55 samples kept so far -- 330s elapsed, ~45s remaining (2.5s/dialogue)
+[133/150 dialogues] 55 samples kept so far -- 330s elapsed, ~42s remaining (2.5s/dialogue)
+[134/150 dialogues] 55 samples kept so far -- 330s elapsed, ~39s remaining (2.5s/dialogue)
+[135/150 dialogues] 55 samples kept so far -- 331s elapsed, ~37s remaining (2.5s/dialogue)
+[136/150 dialogues] 55 samples kept so far -- 332s elapsed, ~34s remaining (2.4s/dialogue)
+[137/150 dialogues] 55 samples kept so far -- 332s elapsed, ~32s remaining (2.4s/dialogue)
+[138/150 dialogues] 55 samples kept so far -- 343s elapsed, ~30s remaining (2.5s/dialogue)
+[139/150 dialogues] 56 samples kept so far -- 344s elapsed, ~27s remaining (2.5s/dialogue)
+[140/150 dialogues] 56 samples kept so far -- 348s elapsed, ~25s remaining (2.5s/dialogue)
+[141/150 dialogues] 56 samples kept so far -- 352s elapsed, ~22s remaining (2.5s/dialogue)
+[142/150 dialogues] 56 samples kept so far -- 353s elapsed, ~20s remaining (2.5s/dialogue)
+[143/150 dialogues] 56 samples kept so far -- 354s elapsed, ~17s remaining (2.5s/dialogue)
+[144/150 dialogues] 56 samples kept so far -- 355s elapsed, ~15s remaining (2.5s/dialogue)
+[145/150 dialogues] 57 samples kept so far -- 359s elapsed, ~12s remaining (2.5s/dialogue)
+[146/150 dialogues] 59 samples kept so far -- 365s elapsed, ~10s remaining (2.5s/dialogue)
+[147/150 dialogues] 59 samples kept so far -- 371s elapsed, ~8s remaining (2.5s/dialogue)
+[148/150 dialogues] 61 samples kept so far -- 378s elapsed, ~5s remaining (2.6s/dialogue)
+[149/150 dialogues] 61 samples kept so far -- 382s elapsed, ~3s remaining (2.6s/dialogue)
+[150/150 dialogues] 61 samples kept so far -- 382s elapsed, ~0s remaining (2.5s/dialogue)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+/content/drive/MyDrive/ReACT-TTS/preprocessing/extract_prosody_features.py:32: UserWarning: PySoundFile failed. Trying audioread instead.
+  y, sr = librosa.load(wav_path, sr=sample_rate)
+/usr/local/lib/python3.12/dist-packages/librosa/core/audio.py:184: FutureWarning: librosa.core.audio.__audioread_load
+	Deprecated as of librosa version 0.10.0.
+	It will be removed in librosa version 1.0.
+  y, sr_native = __audioread_load(path, offset, duration, dtype)
+
+--- why windows were kept/skipped (see MIN_VISIBILITY_RATIO / MIN_TARGET_DURATION_SEC at the top of this file to tune) ---
+    1239  candidate_windows
+     448  skipped: 1 visible tracks (need exactly 2, >= 30% visibility)
+     419  skipped: not exactly 2 distinct speakers
+     372  info: raw face tracks found = 1
+     257  info: raw face tracks found = 2
+     132  skipped: 0 visible tracks (need exactly 2, >= 30% visibility)
+      83  skipped: only 0/16 listener reaction frames embeddable
+      78  skipped: target utterance too short
+      75  info: raw face tracks found = 0
+      61  kept
+      30  info: raw face tracks found = 3
+       7  info: raw face tracks found = 4
+       5  skipped: only 4/16 listener reaction frames embeddable
+       5  skipped: only 3/16 listener reaction frames embeddable
+       4  skipped: 3 visible tracks (need exactly 2, >= 30% visibility)
+       2  skipped: only 1/16 listener reaction frames embeddable
+       1  skipped: zero frames decoded (bad seek range or unreadable clip)
+       1  skipped: only 2/16 listener reaction frames embeddable
+
+Wrote 61 dyadic samples to /content/drive/MyDrive//manifests/train_full.jsonl

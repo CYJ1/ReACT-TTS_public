@@ -1,0 +1,41 @@
+# Stage C: connect the Stage A response-style planner to the Stage B generator
+# and jointly fine-tune, including the counterfactual-listener loss.
+
+seed: 42
+
+stage_a_config: configs/stage_a.yaml
+stage_b_config: configs/stage_b.yaml
+stage_a_ckpt: checkpoints/stage_a/best.pt
+stage_b_ckpt: checkpoints/stage_b/best.pt
+
+data:
+  manifest_train: data/tts_dialogue/train.jsonl
+  manifest_val: data/tts_dialogue/val.jsonl
+  synthetic: true
+
+train:
+  batch_size: 4  # counterfactual steps run TWO extra diffusion sampling passes (neg/pos listener) per
+                 # batch on top of the main training step -- keep this smaller than stage_a/b batch sizes
+                 # and raise it only after checking memory headroom on your hardware
+  lr: 5.0e-5
+  weight_decay: 0.0
+  epochs: 100
+  freeze_style_predictor: false   # true = keep Stage A frozen, only fine-tune TTS
+  style_source: predicted         # "predicted" or "ground_truth" (ablation)
+  loss_weights:
+    tts: 1.0
+    style_consistency: 0.5     # L_style: cos(E_audio(a_hat), z_response)
+    emotion: 0.3                # L_emotion (auxiliary, keeps planner calibrated)
+    prosody: 0.3                 # L_prosody
+    counterfactual_content: 0.5  # L_content (should be small -> penalize when large)
+    counterfactual_speaker: 0.5  # L_spk (should be small -> penalize when large)
+    counterfactual_separation: 0.3  # L_sep (margin loss, should be large)
+  counterfactual:
+    enabled: true
+    margin: 0.2
+    prob: 0.5          # fraction of steps that include a counterfactual pair
+    aux_sample_steps: 4  # diffusion steps used for the *auxiliary* samples (style-consistency /
+                          # counterfactual losses only, not final eval) -- kept low for training speed
+  grad_clip: 1.0
+  log_every: 50
+  ckpt_dir: checkpoints/stage_c
