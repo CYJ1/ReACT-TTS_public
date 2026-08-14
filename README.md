@@ -1,281 +1,366 @@
 # ReACT-TTS
 
-**Listener-Reaction-Aware Conversational Text-to-Speech**
+Official implementation of:
 
-> Existing face-conditioned TTS asks *what a face should sound like*; we ask
-> *how a speaker should sound after seeing the listener's reaction*.
+**Listen Before You Speak: Response Planning from Listener Facial Reactions for Conversational Speech Generation**
 
-ReACT-TTS is a follow-up to [FEIM-TTS](https://arxiv.org/abs/2409.16203) and is
-built on top of the [Face-TTS](https://github.com/naver-ai/facetts)
-(Grad-TTS + face-conditioning) codebase. FEIM-TTS answers
-`Speaker Face + Text -> Expressive Speech`. ReACT-TTS extends the input to the
-full conversational situation:
+ReACT-TTS explores whether a speaker can better plan *how to respond* by observing the listener's facial reaction immediately before speaking.
 
-```
-Speaker Identity + Dialogue History + Listener Reaction + Target Text
-    -> Context-Appropriate Speech
-```
+Unlike conventional conversational TTS systems that rely primarily on textual dialogue context, ReACT-TTS incorporates **pre-response listener facial reactions** as an additional conversational signal for response-style planning.
 
-The role split that motivates the whole design:
+---
 
-| Visual source            | Role                              |
-|---------------------------|------------------------------------|
-| Speaker face / voice ref  | *who* is speaking (stable identity, timbre) |
-| Listener face sequence    | *how* the speaker should react (transient, drives prosody/emotion) |
-| Dialogue text / audio     | *why* the speaker says it that way (semantics, discourse) |
+## Overview
 
-## Task formulation
+Given a dialogue context and the listener's facial reaction before the target response, ReACT-TTS predicts a response-style representation that can be used for conversational speech generation.
 
-Given the last 2-3 dialogue turns `H_{t-3:t-1}`, the target sentence `x_t`,
-the target speaker identity `z_speaker`, and the listener's short facial
-reaction sequence `V_{t-1}^L` around the end of the previous turn, generate:
-
-```
-a_t_hat = G(x_t, H_{t-3:t-1}, V_{t-1}^L, z_speaker)
-```
-
-Speech `a_t_hat` should preserve the target speaker's identity while adapting
-emotion and prosody to the listener's reaction and the conversational
-context -- **without mirroring** the listener's emotion (RQ3 below): the
-model must select a response style (apologetic, defensive, reassuring, ...)
-appropriate to `x_t`, not copy the listener's affect.
-
-### Research questions
-
-- **RQ1** -- Does the listener's facial reaction help predict the next
-  utterance's emotion/prosody, beyond text + previous audio context?
-- **RQ2** -- Does the *change* in listener expression
-  (`h_react = MLP([h_pre; h_post; h_post - h_pre; h_temporal])`) matter more
-  than a single static frame?
-- **RQ3** -- Is "response style planning" (context+text-conditioned)
-  distinguishable from naive "emotion mirroring" (listener emotion copied
-  directly onto the speaker)?
-
-## Architecture
-
-Two-stage, modular design (deliberately not end-to-end for analysis clarity
-and reproducibility -- see `docs`/paper §Method):
-
-```
-Stage A: Response Style Predictor
-  2-3 turn transcript ---> Text Context Encoder ---------+
-  listener face seq   ---> Listener Reaction Encoder -----+---> Fusion (cross-attn + gate) ---> Style heads
-  target text (query)  ---------------------------------->|                                      (emotion/VAD, prosody)
-
-Stage B/C: Expressive TTS backbone (Face-TTS / Grad-TTS lineage)
-  target text ---> Phoneme Encoder ---> Duration Predictor ---> Length Regulator ---+
-  speaker ref ---> Speaker Encoder (global conditioning) --------------------------+---> Diffusion Decoder (AdaLN-conditioned) ---> mel
-  predicted/GT style ---> Style Adaptor (AdaLN) -------------------------------------+
+```text
+Dialogue Context ───────────────┐
+                               │
+Listener Reaction Frames       │
+        │                      │
+        ▼                      │
+Temporal Reaction Encoder      │
+        │                      │
+        └──────► Fusion ◄──────┘
+                    │
+                    ▼
+             Response Planning
+                    │
+                    ▼
+            Style Representation
+                    │
+                    ▼
+              Speech Generator
 ```
 
-* `react_tts/modules/text_context_encoder.py` -- speaker-role + turn-position
-  + target-marker embeddings on top of a transformer text encoder.
-* `react_tts/modules/listener_reaction_encoder.py` -- per-frame face encoder
-  + temporal transformer + explicit pre/post **reaction delta**
-  representation (RQ2).
-* `react_tts/modules/fusion.py` -- target-text-conditioned cross-attention
-  over `[h_text; h_react]` plus a modality gate `g = sigmoid(W[h_target; h_m])`
-  (inspect `g` to see when the model leans on vision vs. text).
-* `react_tts/models/response_style_predictor.py` -- Stage A model. Supports
-  ablation flags used in the paper's Table (`use_listener_face`,
-  `temporal_face`, `use_reaction_delta`, `random_listener`) so every row of
-  the ablation table is one flag flip, not a separate model.
-* `react_tts/tts/` -- Grad-TTS-lineage backbone (phoneme encoder, duration
-  predictor, length regulator, diffusion decoder). Style/speaker are injected
-  via AdaLN, *not* concatenated into one embedding (see design note below).
-* `react_tts/models/react_tts.py` -- wires Stage A + Stage B, supports
-  `style_source={"ground_truth","predicted"}` and a `counterfactual()` method
-  that swaps only the listener reaction while holding text/speaker fixed
-  (RQ3 / controllability probe).
+The listener reaction is extracted from the **1-second interval immediately preceding the target response**.
 
-### Conditioning placement (deliberate, not everything -> one vector)
+---
 
-| Signal                      | Where it's injected                          |
-|------------------------------|-----------------------------------------------|
-| `z_speaker` (identity/timbre)| global AdaLN conditioning across whole decoder |
-| `z_emotion` (response style) | AdaLN / style adaptor in decoder blocks        |
-| `z_prosody` (F0/energy/rate) | duration / F0 / energy predictors              |
-| dialogue context             | cross-attention in the phoneme/text encoder    |
+## Main Research Question
 
-## Loss
+> Can the listener's facial reaction provide complementary information for planning the speaker's upcoming conversational response?
 
+Our experiments investigate:
+
+- Text-only response planning
+- Static listener-face conditioning
+- Temporal listener-reaction conditioning
+- Explicit reaction-difference features
+- Correct vs. mismatched listener reactions
+- Downstream speech generation using the predicted response representation
+
+---
+
+## Dataset
+
+Experiments are conducted on the **MELD** dataset using a strictly filtered dyadic conversational subset.
+
+### Response-planning subset
+
+| Split | Samples |
+|------:|--------:|
+| Train | 1,117 |
+| Dev | 116 |
+| Test | 261 |
+
+The preprocessing protocol includes:
+
+- Exactly two dialogue participants
+- Three preceding context turns
+- Target utterance duration ≥ 1 s
+- 1-second pre-response listener-reaction window
+- 16 sampled reaction frames
+- Listener visibility filtering
+- Face identity consistency filtering
+- No Test-set threshold tuning
+
+For speech-generation experiments, only target speakers with training-reference audio are retained:
+
+| Split | Generation samples |
+|------:|-------------------:|
+| Dev | 115 |
+| Test | 252 |
+
+MELD itself is **not distributed in this repository**.
+
+---
+
+## Response Planning
+
+The main response planner combines textual conversational context with temporally encoded listener facial reactions.
+
+### Test Results
+
+Results below are averaged over 10 random seeds.
+
+| Method | Accuracy ↑ | Macro-F1 ↑ | CCC ↑ |
+|---|---:|---:|---:|
+| Text-only | 0.4521 ± 0.0316 | 0.2489 ± 0.0152 | 0.2173 ± 0.0463 |
+| Temporal Listener Reaction | 0.4483 ± 0.0243 | **0.2582 ± 0.0131** | **0.2282 ± 0.0291** |
+
+For Macro-F1, Temporal Listener Reaction outperformed Text-only in **7/10 seeds**.
+
+Bootstrap evaluation over Test samples gives:
+
+```text
+Δ Macro-F1 = +0.0094
+95% CI = [-0.0057, +0.0247]
+P(Δ > 0) = 0.884
 ```
-L = L_TTS + λ1 L_style + λ2 L_prosody + λ3 L_emotion + λ4 L_reaction + λ5 L_counterfactual
+
+Because the confidence interval includes zero, we interpret this result as a **positive tendency rather than a statistically significant improvement**.
+
+---
+
+## Ablation Study
+
+A controlled 5-seed ablation compares different visual-reaction representations.
+
+| Variant | Macro-F1 ↑ |
+|---|---:|
+| Text-only | 0.2367 ± 0.0021 |
+| Static Listener Face | 0.2429 ± 0.0272 |
+| Temporal + Explicit Δ | 0.2407 ± 0.0191 |
+| **Temporal Listener Reaction** | **0.2558 ± 0.0135** |
+
+These results suggest that temporal modeling is useful for capturing listener-reaction dynamics, while explicitly supplying frame-difference features does not provide an additional benefit in this setting.
+
+---
+
+## Listener-Mismatch Analysis
+
+To examine whether the model uses listener-specific reaction information, we compare the corresponding listener reaction with a mismatched reaction.
+
+| Listener Input | Macro-F1 ↑ |
+|---|---:|
+| Correct Listener | **0.2582 ± 0.0131** |
+| Mismatched Listener | 0.2526 ± 0.0117 |
+
+Bootstrap analysis:
+
+```text
+Δ Macro-F1 = +0.0055
+95% CI = [-0.0027, +0.0135]
+P(Δ > 0) = 0.911
 ```
 
-`L_counterfactual` (the "does the model actually use the face" probe) holds
-`x_t` and `z_speaker` fixed and swaps the listener reaction between a
-"negative" and a "positive" clip:
+The corresponding listener reaction tends to perform better than the mismatched condition, although the confidence interval again includes zero.
 
-* `L_content` -- ASR-embedding distance between the two outputs should be
-  *small* (content shouldn't change).
-* `L_spk` -- speaker-embedding cosine distance should be *small* (identity
-  shouldn't change).
-* `L_sep` -- style-embedding distance should be *large*, margin loss
-  `max(0, m - d(style_neg, style_pos))` (style *should* change).
+---
 
-See `react_tts/losses.py`.
+## Speech Generation
 
-## Repository layout
+We additionally connect the response planner to a Grad-TTS-based acoustic model to test whether the predicted response representation can be consumed by an end-to-end speech-generation pipeline.
 
+The generation model uses:
+
+- Grad-TTS acoustic backbone
+- Monotonic Alignment Search (MAS)
+- 128-bin mel spectrogram
+- 16 kHz audio
+- HiFi-GAN vocoder
+- 256-D speaker embedding
+- 256-D response-style embedding
+
+The acoustic condition is formed as:
+
+```text
+Speaker Embedding [256]
+        +
+Response Style [256]
+        ↓
+Global Condition [512]
+        ↓
+Grad-TTS
+        ↓
+Mel Spectrogram
+        ↓
+HiFi-GAN
+        ↓
+Waveform
 ```
-react_tts/
-  data/            dataset classes + tokenizer (Stage A + Stage B/C)
-  modules/         text/listener/fusion/style-head building blocks (Stage A)
-  tts/             Grad-TTS-lineage phoneme encoder / duration / diffusion decoder
-  models/          response_style_predictor.py (Stage A), react_tts.py (Stage B/C, full model)
-  losses.py
-preprocessing/     MELD dyadic-subset builder, listener-reaction window extraction,
-                   prosody (F0/energy/rate) extraction
-scripts/           train_stage_a.py / train_stage_b.py / train_stage_c.py /
-                   inference.py / counterfactual_eval.py
-eval/              metrics.py (emotion Acc/F1, VAD CCC, F0/energy corr, style cos-sim)
-configs/           stage_a.yaml / stage_b.yaml / stage_c.yaml
-tests/             pytest unit + shape tests on synthetic data (no dataset/checkpoint needed)
+
+The response planner is frozen during the final generation stage, and a trainable adapter maps its response-style representation into the acoustic style space.
+
+The current speech-generation experiment is intended primarily as an **end-to-end feasibility study**, rather than as a claim of improved acoustic quality.
+
+---
+
+## Mel-Spectrogram Configuration
+
+```text
+Sample rate : 16000 Hz
+n_fft       : 1024
+hop_length  : 160
+win_length  : 1024
+n_mels      : 128
+f_min       : 0
+f_max       : 8000
 ```
 
-## Data strategy
+---
 
-Staged, following the plan discussed for the ECCV workshop MVP:
+## Repository Structure
 
-1. **Stage 1** -- start from a pretrained zero-shot TTS / Face-TTS backbone.
-2. **Stage 2** -- fine-tune face-conditioned expressive generation on
-   CREMA-D (reproduces the FEIM-TTS setting; no dialogue context needed).
-3. **Stage 3** -- train the Stage A response-style planner on a
-   **high-confidence dyadic subset of MELD** (see
-   `preprocessing/build_meld_dyadic_subset.py`): 2-speaker scenes only,
-   listener-face visibility >= 70%, target speech >= 1s, no heavy overlap.
-4. **Stage 4** -- connect the planner's predicted style to the generator and
-   jointly fine-tune (`scripts/train_stage_c.py`).
+```text
+ReACT-TTS/
+├── configs/
+│   └── ...
+├── react_tts/
+│   ├── data/
+│   ├── models/
+│   └── tts/
+│       └── grad_tts/
+├── scripts/
+│   ├── train_grad_stage_b.py
+│   ├── train_grad_stage_c.py
+│   ├── infer_grad_stage_c.py
+│   ├── infer_grad_stage_c_all.py
+│   ├── evaluate_generated_speech.py
+│   └── ...
+└── README.md
+```
 
-`react_tts/data/dialogue_dataset.py` and `tts_dataset.py` both ship a
-`synthetic=True` mode that fabricates random-but-shape-correct tensors, so
-the whole pipeline (`tests/`) is runnable and CI-testable without MELD, face
-detectors, or GPU access.
+---
 
-## MVP scope (this repo)
+## Training Pipeline
 
-Implemented now: everything under "Architecture" above, end-to-end on
-synthetic data, plus the ablation flags needed for:
+The current implementation follows three stages.
 
-- text-only vs. static-listener vs. temporal-listener vs. reaction-delta baselines
-- random-listener control (modality-neglect probe)
-- counterfactual listener swap (controllability probe)
+### Stage A — Response Planning
 
-Also implemented: real (not placeholder) pretrained encoders for the
-listener-reaction and speaker-identity inputs -- see "Pretrained encoders"
-below -- and the MELD dyadic-subset preprocessing pipeline wired to them.
-Not yet run against real MELD data end-to-end in this repo (see "Bringing
-your own MELD data").
+Train the response planner using dialogue context and listener facial reactions.
 
-Deliberately deferred (see paper §Limitations): fully automatic
-speaker/listener tracking across multi-party scenes, LLM-generated
-open-vocabulary style descriptions, joint audio-visual (talking-face) output,
-multilingual support, long-term dialogue memory.
+The primary configuration uses temporal listener-reaction features without explicit difference features.
 
-## Setup
+### Stage B — Acoustic Pretraining
+
+Train the Grad-TTS acoustic model using ground-truth emotion/style supervision and speaker embeddings.
+
+### Stage C — Planner-to-Speech Adaptation
+
+Freeze the Stage-A response planner and connect its predicted style representation to the acoustic model through a trainable response-style adapter.
+
+```text
+Frozen Stage-A Planner
+        ↓
+Predicted Style
+        ↓
+ResponseStyleAdapter
+        ↓
+Acoustic Style
+        ↓
+Grad-TTS
+```
+
+---
+
+## Inference
+
+A single utterance can be generated using:
 
 ```bash
-pip install -r requirements.txt
-pytest tests/ -q
+python3 -m scripts.infer_grad_stage_c \
+    --config <CONFIG> \
+    --checkpoint <CHECKPOINT>
 ```
 
-Run the training/inference/eval scripts as modules from the repo root (so
-`react_tts`/`eval`/`preprocessing` resolve as packages), e.g.:
+Batch inference is available through:
 
 ```bash
-python -m scripts.train_stage_a --config configs/stage_a.yaml
-python -m scripts.train_stage_a --config configs/stage_a.yaml --mode mirror   # RQ3 baseline, no training
-python -m scripts.train_stage_b --config configs/stage_b.yaml
-python -m scripts.train_stage_c --config configs/stage_c.yaml
-python -m scripts.inference --input_json examples/apology_example.json --out_mel out/apology.npy
-python -m scripts.counterfactual_eval
+python3 -m scripts.infer_grad_stage_c_all \
+    --config <CONFIG> \
+    --checkpoint <CHECKPOINT> \
+    --output_dir <OUTPUT_DIR>
 ```
 
-Note on scale: `configs/stage_c.yaml`'s counterfactual loss runs extra
-diffusion *sampling* passes per training step (not just the score-matching
-loss), which is meaningfully more expensive than Stage A/B training --
-tune `train.batch_size` and `train.counterfactual.{prob,aux_sample_steps}`
-to your hardware.
+Exact arguments may vary depending on the experimental configuration.
 
-## Pretrained encoders
+---
 
-Most face-recognition / speech checkpoints (FaceNet, ArcFace, ECAPA-TDNN
-hub weights, ...) are distributed via a GitHub release or a model hub
-(HuggingFace Hub, Zenodo), which may be blocked in network-restricted
-environments (sandboxed CI runners, offline clusters). This repo picks two
-encoders specifically because their weights are reachable without that:
+## Evaluation
 
-| Role | Encoder | Weights come from | Dim |
-|---|---|---|---|
-| Listener facial **expression** | MediaPipe FaceLandmarker (Tasks API), `preprocessing/pretrained_face_embedder.py` | `storage.googleapis.com` (plain file download) | 52 (ARKit blendshape scores) |
-| Target **speaker** identity/timbre | Resemblyzer `VoiceEncoder`, `preprocessing/extract_speaker_embedding.py` | ships inside the `resemblyzer` pip wheel | 256 |
-
-Note this uses an *expression* descriptor (blendshapes: browDownLeft,
-mouthSmileLeft, eyeBlinkRight, jawOpen, ...) rather than a face-*identity*
-embedding for the listener -- which is arguably the better fit anyway, since
-the listener-reaction encoder needs "what is the face doing", not "whose
-face is it" (identity is the *speaker*'s job, see "Conditioning placement").
-
-Setup:
+Generated speech can be evaluated using:
 
 ```bash
-pip install -r requirements.txt
-python -m preprocessing.download_pretrained_assets   # fetches the two MediaPipe model files into models/mediapipe/
+python3 -m scripts.evaluate_generated_speech \
+    --temporal_dir <TEMPORAL_OUTPUT_DIR> \
+    --text_dir <TEXT_ONLY_OUTPUT_DIR>
 ```
 
-Two environment gotchas found while integrating these (already reflected in
-`requirements.txt`, listed here so they're not a mystery if you rebuild the
-environment):
-- `resemblyzer`'s `webrtcvad` dependency imports `pkg_resources`, which
-  `setuptools>=81` no longer ships -- pin `setuptools<81`.
-- MediaPipe's Tasks API loads a native shared library that needs
-  EGL/GLES even for CPU-only inference: `apt-get install -y libgl1 libegl1 libgles2`.
-- If `import torch.nn` raises `_ARRAY_API not found`, your specific `torch`
-  build predates numpy2 ABI support -- fix it locally (upgrade torch, or
-  `pip install "numpy<2"` in that one environment). Do **not** pin
-  `numpy<2` in `requirements.txt` itself: environments like Colab
-  preinstall numpy>=2 for other packages (jax, opencv-python, ...), and a
-  blanket downgrade breaks those instead.
+The current evaluation pipeline includes:
 
-## Bringing your own MELD data
+- ASR Word Error Rate (WER)
+- Character Error Rate (CER)
+- Speaker similarity
 
-MELD's own download page and most third-party mirrors (HuggingFace
-datasets, Zenodo, direct GitHub-hosted archives) may not be reachable from
-every environment. If your local/dev environment can't reach them either,
-**`notebooks/colab_meld_stage_a.ipynb`** runs the whole
-download -> preprocess -> Stage A training pipeline in Google Colab (real
-internet access + free GPU, using only MELD's smaller dev split -- good
-enough for a workshop-scale run). Otherwise, this is the shape
-`preprocessing/build_meld_dyadic_subset.py` expects if you're fetching MELD
-yourself:
+Response-planning evaluation additionally reports:
 
-1. Get `train_sent_emo.csv` / `dev_sent_emo.csv` / `test_sent_emo.csv` (the
-   per-utterance label tables) and the corresponding raw video splits
-   (`train_splits/`, `dev_splits_complete/`, `output_repeated_splits_test/`)
-   from MELD's distribution.
-2. Place them anywhere and point the CLI at them, e.g.:
-   ```bash
-   python -m preprocessing.download_pretrained_assets
-   python -m preprocessing.build_meld_dyadic_subset \
-       --meld_csv /path/to/train_sent_emo.csv \
-       --video_dir /path/to/train_splits \
-       --out_manifest data/meld_dyadic/train.jsonl \
-       --limit_dialogues 20   # drop this once a small run looks right
-   ```
-   This writes `data/meld_dyadic/train.jsonl` (manifest) and
-   `data/meld_dyadic/reaction_features/*.npy` (per-sample listener
-   blendshape sequences), using the real MediaPipe detector/embedder by
-   default -- no more placeholder features.
-3. Repeat for the dev split into `data/meld_dyadic/val.jsonl`.
-4. Point `configs/stage_a.yaml`'s `data.manifest_train` / `manifest_val` at
-   the two manifests and flip `data.synthetic: false`.
-5. Train: `python -m scripts.train_stage_a --config configs/stage_a.yaml`.
+- Accuracy
+- Macro-F1
+- Concordance Correlation Coefficient (CCC)
+- Multi-seed statistics
+- Bootstrap confidence intervals
 
-Sanity-check before a full run: `build_meld_dyadic_subset.py` is
-conservative on purpose (2-speaker scenes only, listener visibility >= 70%,
-target speech >= 1s -- see "Data strategy" above), so expect it to keep only
-a fraction of MELD's dialogues. Run with `--limit_dialogues 20` first and
-check the printed sample count before committing to a full-corpus run,
-which involves per-frame face detection over every kept video and is the
-slowest step in the pipeline.
+---
+
+## Generated Samples
+
+Generated audio and experiment artifacts are not included in this public repository.
+
+They are stored separately to avoid distributing large binary artifacts and dataset-derived materials.
+
+Audio demonstrations may be released separately.
+
+---
+
+## Requirements
+
+The implementation has been tested with Python 3.10 and PyTorch-based training/inference.
+
+Core dependencies include:
+
+```text
+torch
+torchvision
+librosa
+soundfile
+pyworld
+einops
+resemblyzer
+faster-whisper
+```
+
+Please refer to the repository configuration and scripts for experiment-specific requirements.
+
+---
+
+## Citation
+
+Citation information will be added after publication.
+
+```bibtex
+@inproceedings{chu2026listen,
+  title     = {Listen Before You Speak: Response Planning from Listener Facial Reactions for Conversational Speech Generation},
+  author    = {Yunji Chu},
+  year      = {2026}
+}
+```
+
+---
+
+## Acknowledgements
+
+This implementation builds upon ideas and components from prior work on conversational speech synthesis, Grad-TTS, Face-TTS, HiFi-GAN, and multimodal affect modeling.
+
+Please refer to the paper for complete citations and discussion of related work.
+
+---
+
+## License
+
+Please refer to `LICENSE` for repository licensing information.
+
+Third-party datasets, pretrained models, and external components remain subject to their original licenses.
