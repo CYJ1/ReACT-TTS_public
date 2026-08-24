@@ -341,14 +341,6 @@ Please refer to the repository configuration and scripts for experiment-specific
 
 Citation information will be added after publication.
 
-```bibtex
-@inproceedings{chu2026listen,
-  title     = {Listen Before You Speak: Response Planning from Listener Facial Reactions for Conversational Speech Generation},
-  author    = {Yunji Chu},
-  year      = {2026}
-}
-```
-
 ---
 
 ## Acknowledgements
